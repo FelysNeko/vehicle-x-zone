@@ -18,7 +18,7 @@ def get_config():
     parser.add_argument(
         "--experiment_name",
         type=str,
-        default="Nov-23",
+        default="check",
         help="an identifier to distinguish different experiment.",
     )
     parser.add_argument(
