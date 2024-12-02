@@ -114,11 +114,17 @@ class Vehicle:
 
 
 class Human:
-    def __init__(self, v: float, tick: float) -> None:
+    def __init__(self, v: float, theta: float, phi: float, tick: float) -> None:
+        assert 0 <= v
+        assert -np.pi <= theta <= np.pi
+        assert 0 <= phi <= np.pi
         self.__v = v
+        self.__theta = theta
+        self.__phi = phi
         self.__tick = tick
         self.position = Vector3(0, 0, 0)
         self.direction = Vector3(0, 0, 0)
+        self.offline = False
 
     @property
     def v(self) -> float:
@@ -133,3 +139,21 @@ class Human:
         rotated = self.direction.t @ spinner(alpha, beta, gamma)
         self.direction = Vector3(*rotated)
         self.position += self.direction * self.tick * self.v
+
+    def observe(self, vehicle: Vehicle) -> float:
+        relation = vehicle.position - self.position
+        h = abs(self.__theta - relation.theta)
+        v = abs(self.__phi - relation.phi)
+        c = np.pi / 180
+        if h > np.pi:
+            h = 2 * np.pi - h
+
+        visible = v < 60 * c and h < 80 * c
+        distance = relation.magnitude
+        level = abs(vehicle.direction.z) <= 0.2
+
+        return 0.0 \
+            + 0.25 * (distance < 8 and not level) \
+            + 0.25 * (distance < 8 and not visible) \
+            + 0.25 * (distance < 3 and vehicle.speed > 0.5) \
+            + 0.25 * (distance < 3)

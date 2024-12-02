@@ -1,3 +1,5 @@
+import numpy as np
+
 from environ.components import Zone
 from environ.scenario import Scenario
 
@@ -6,12 +8,12 @@ class EnvCore(object):
     def __init__(self):
         self.scenario = Scenario()
         self.agent_num = 7
-        self.obs_dim = 76
+        self.obs_dim = 77
         self.action_dim = 6
 
     def reset(self):
         sub_agent_obs = []
-        for obs in self.scenario.reset():
+        for obs in self.scenario.reset(humans=np.random.randint(0, 7)):
             sub_agent_obs.append(obs)
         return sub_agent_obs
 

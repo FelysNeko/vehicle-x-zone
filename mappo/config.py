@@ -202,13 +202,13 @@ def get_config():
     parser.add_argument(
         "--lr",
         type=float,
-        default=5e-4,
+        default=3e-4,
         help="learning rate (default: 5e-4)"
     )
     parser.add_argument(
         "--critic_lr",
         type=float,
-        default=5e-4,
+        default=3e-4,
         help="critic learning rate (default: 5e-4)",
     )
     parser.add_argument(
