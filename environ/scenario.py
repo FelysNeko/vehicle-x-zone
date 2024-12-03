@@ -83,7 +83,7 @@ class Scenario:
                     offline.append(i)
                     crashed = True
                 # encourage vehicles with high priority to move, and the others to wait
-                elif distance < 5 and vehicle.priority < other.priority and vehicle.speed > 0.1:
+                elif distance < 5 and vehicle.priority < other.priority and vehicle.speed > 0.01:
                     warning = True
                 # encourage conservative actions when the surrounding gets complicated
                 # cumulated with observation of humans
@@ -113,7 +113,7 @@ class Scenario:
                     offline.append(i)
                     crashed = True
                 # a warning of hitting a human
-                elif distance < 5 and vehicle.speed > 0.1:
+                elif distance < 5 and vehicle.speed > 0.01:
                     warning = True
                 # encourage conservative actions when the surrounding gets complicated
                 # cumulated with observation of vehicles
@@ -123,7 +123,7 @@ class Scenario:
             if crashed:
                 yield obs, -10.0, True
             elif warning:
-                yield obs, -0.1 * vehicle.speed / vehicle.v, False
+                yield obs, -0.5 * vehicle.speed / vehicle.v, False
             else:
                 yield obs, reward, done
 

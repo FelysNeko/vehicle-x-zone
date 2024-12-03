@@ -13,7 +13,9 @@ class EnvCore(object):
 
     def reset(self):
         sub_agent_obs = []
-        for obs in self.scenario.reset(humans=np.random.randint(0, 7)):
+        vehicles = np.random.randint(1, 8)
+        humans = np.random.randint(0, 7)
+        for obs in self.scenario.reset(vehicles, humans):
             sub_agent_obs.append(obs)
         return sub_agent_obs
 
