@@ -33,6 +33,9 @@ class Zone:
         self.__y = y
         self.__z = z
 
+    def efficiency(self, c: float):
+        return sum(self.__x) * sum(self.__y) * sum(self.__z) / (c * 2) ** 3
+
     def constraint(self, direction: Vector3) -> float:
         with np.errstate(divide='ignore'):
             constraints = (

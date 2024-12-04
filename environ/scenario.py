@@ -36,6 +36,8 @@ class Scenario:
             # base reward is the distance it moved in this step
             # further adjustments will be applied to it
             moved = vehicle.move(zone)
+            # give some extra reward for high spatial efficiency
+            moved *= 0.95 + 0.05 * zone.efficiency(vehicle.boundary)
             rewards.append(moved)
 
         for human in self.humans:
@@ -83,12 +85,12 @@ class Scenario:
                     offline.append(i)
                     crashed = True
                 # encourage vehicles with high priority to move, and the others to wait
-                elif distance < 5 and vehicle.priority < other.priority and vehicle.speed > 0.01:
+                elif distance < 5 and vehicle.priority < other.priority and vehicle.speed > 0:
                     warning = True
                 # encourage conservative actions when the surrounding gets complicated
                 # cumulated with observation of humans
                 elif distance < 10 and vehicle.speed > 5 and other.speed > 5:
-                    reward *= 0.95 + 0.005 * distance
+                    reward *= 0.9 + 0.01 * distance
 
             # observe all humans
             for human in self.humans:
@@ -113,12 +115,12 @@ class Scenario:
                     offline.append(i)
                     crashed = True
                 # a warning of hitting a human
-                elif distance < 5 and vehicle.speed > 0.01:
+                elif distance < 5 and vehicle.speed > 0:
                     warning = True
                 # encourage conservative actions when the surrounding gets complicated
                 # cumulated with observation of vehicles
                 elif distance < 10 and vehicle.speed > 5:
-                    reward *= 0.95 + 0.005 * distance
+                    reward *= 0.9 + 0.01 * distance
 
             if crashed:
                 yield obs, -10.0, True
