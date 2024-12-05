@@ -94,7 +94,7 @@ def get_config():
     parser.add_argument(
         "--episode_length",
         type=int,
-        default=200,
+        default=400,
         help="Max length for any episode"
     )
 
