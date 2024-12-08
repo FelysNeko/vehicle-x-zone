@@ -66,7 +66,7 @@ def get_config():
     parser.add_argument(
         "--num_env_steps",
         type=int,
-        default=10e6,
+        default=4e6,
         help="Number of environment steps to train (default: 10e6)",
     )
     parser.add_argument(
@@ -202,13 +202,13 @@ def get_config():
     parser.add_argument(
         "--lr",
         type=float,
-        default=3e-4,
+        default=2e-4,
         help="learning rate (default: 5e-4)"
     )
     parser.add_argument(
         "--critic_lr",
         type=float,
-        default=3e-4,
+        default=2e-4,
         help="critic learning rate (default: 5e-4)",
     )
     parser.add_argument(

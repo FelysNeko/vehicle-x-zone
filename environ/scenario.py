@@ -59,7 +59,7 @@ class Scenario:
             # occurs when one vehicle hits a human or another vehicle
             crashed = False
             # occurs before bad things happened
-            warning = False
+            warned = False
 
             if vehicle.odometer >= 20:
                 offline.append(i)
@@ -76,7 +76,7 @@ class Scenario:
                 info = *displacement.t, *other.direction.t, other.speed, other.priority
                 obs.extend(info)
 
-                if warning or crashed:
+                if warned or crashed:
                     continue
 
                 distance = displacement.magnitude
@@ -86,7 +86,7 @@ class Scenario:
                     crashed = True
                 # encourage vehicles with high priority to move, and the others to wait
                 elif distance < 5 and vehicle.priority < other.priority and vehicle.speed > 0:
-                    warning = True
+                    warned = True
                 # encourage conservative actions when the surrounding gets complicated
                 # cumulated with observation of humans
                 elif distance < 10 and vehicle.speed > 5 and other.speed > 5:
@@ -103,7 +103,7 @@ class Scenario:
                 info = *displacement.t, stress
                 obs.extend(info)
 
-                if warning or crashed:
+                if warned or crashed:
                     continue
 
                 # reduce reward if the human is stressful
@@ -111,12 +111,13 @@ class Scenario:
 
                 distance = displacement.magnitude
                 # too close
-                if distance < 1:
+                # crash only if moving, otherwise, it's human's fault
+                if distance < 1 < vehicle.speed:
                     offline.append(i)
                     crashed = True
-                # a warning of hitting a human
-                elif distance < 5 and vehicle.speed > 0:
-                    warning = True
+                # a warned of hitting a human
+                elif distance < 5 and vehicle.speed > 0.5:
+                    warned = True
                 # encourage conservative actions when the surrounding gets complicated
                 # cumulated with observation of vehicles
                 elif distance < 10 and vehicle.speed > 5:
@@ -124,8 +125,8 @@ class Scenario:
 
             if crashed:
                 yield obs, -10.0, True
-            elif warning:
-                yield obs, -0.5 * vehicle.speed / vehicle.v, False
+            elif warned:
+                yield obs, -vehicle.speed / vehicle.v, done
             else:
                 yield obs, reward, done
 
@@ -140,12 +141,12 @@ class Scenario:
 
         self.vehicles.clear()
         for _ in range(7):
-            start = Spot.normal(10, 1)
+            start = Spot.normal(10, 0.1)
             priority = np.random.uniform(1, 3)
             vehicle = Vehicle(14, 7, priority, self.tick)
             vehicle.position = start
             vehicle.direction = -start.normalized
-            vehicle.speed = np.random.normal(7, 1)
+            vehicle.speed = np.random.normal(7, 0.1)
             self.vehicles.append(vehicle)
 
         for i in range(7 - vehicles):
